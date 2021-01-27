@@ -1,33 +1,32 @@
 package com.rasmoo.cliente.escola.gradecurricular.controllers;
 
 import com.rasmoo.cliente.escola.gradecurricular.entities.Materia;
-import com.rasmoo.cliente.escola.gradecurricular.repositories.MateriaRepository;
+import com.rasmoo.cliente.escola.gradecurricular.services.IMateriaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/materias")
 public class MateriaController {
 
-    private final MateriaRepository materiaRepository;
+    private final IMateriaService materiaService;
 
-    public MateriaController(final MateriaRepository materiaRepository) {
-        this.materiaRepository = materiaRepository;
+    public MateriaController(final IMateriaService materiaService) {
+        this.materiaService = materiaService;
     }
 
     @GetMapping
     public ResponseEntity<List<Materia>> listarMaterias() {
-        return ResponseEntity.status(HttpStatus.OK).body(this.materiaRepository.findAll());
+        return ResponseEntity.status(HttpStatus.OK).body(this.materiaService.listar());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Materia> buscarMateria(@PathVariable final Long id) {
         try {
-            return ResponseEntity.status(HttpStatus.OK).body(this.materiaRepository.findById(id).get());
+            return ResponseEntity.status(HttpStatus.OK).body(this.materiaService.buscar(id));
         } catch (Exception exception) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
@@ -35,38 +34,21 @@ public class MateriaController {
 
     @PostMapping
     public ResponseEntity<Materia> cadastrarMateria(@RequestBody final Materia materia) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.materiaRepository.save(materia));
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.materiaService.cadastrar(materia));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Materia> atualizarMateria(@PathVariable final Long id, @RequestBody final Materia materia) {
-        try {
-            final Materia materiaSalva = this.materiaRepository.findById(id).get();
+        final Materia materiaAtualizada = this.materiaService.atualizar(id, materia);
 
-            materiaSalva.setNome(materia.getNome());
-            materiaSalva.setCodigo(materia.getCodigo());
-            materiaSalva.setFrequencia(materia.getFrequencia());
-            materiaSalva.setHoras(materia.getHoras());
-
-            final Materia materiaAtualizada = this.materiaRepository.save(materiaSalva);
-
-            return ResponseEntity.status(HttpStatus.OK).body(materiaAtualizada);
-        } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(materiaAtualizada);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletarMateria(@PathVariable final Long id) {
-        try {
-            final Materia materia = this.materiaRepository.findById(id).get();
+        this.materiaService.deletar(id);
 
-            this.materiaRepository.delete(materia);
-
-            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-        } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
 }
