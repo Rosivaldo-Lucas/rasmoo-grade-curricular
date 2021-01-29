@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -30,12 +31,12 @@ public class MateriaController {
     }
 
     @PostMapping
-    public ResponseEntity<Materia> cadastrarMateria(@RequestBody final MateriaDto materiaDto) {
+    public ResponseEntity<Materia> cadastrarMateria(@RequestBody @Valid final MateriaDto materiaDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(this.materiaService.cadastrar(materiaDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Materia> atualizarMateria(@PathVariable final Long id, @RequestBody final MateriaDto materiaDto) {
+    public ResponseEntity<Materia> atualizarMateria(@PathVariable final Long id, @RequestBody @Valid final MateriaDto materiaDto) {
         final Materia materiaAtualizada = this.materiaService.atualizar(id, materiaDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(materiaAtualizada);
