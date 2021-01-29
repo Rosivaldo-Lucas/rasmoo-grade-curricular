@@ -25,11 +25,7 @@ public class MateriaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Materia> buscarMateria(@PathVariable final Long id) {
-        try {
-            return ResponseEntity.status(HttpStatus.OK).body(this.materiaService.buscar(id));
-        } catch (Exception exception) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        }
+        return ResponseEntity.status(HttpStatus.OK).body(this.materiaService.buscar(id));
     }
 
     @PostMapping
