@@ -1,5 +1,6 @@
 package com.rasmoo.cliente.escola.gradecurricular.controllers;
 
+import com.rasmoo.cliente.escola.gradecurricular.dto.MateriaDto;
 import com.rasmoo.cliente.escola.gradecurricular.entities.Materia;
 import com.rasmoo.cliente.escola.gradecurricular.services.IMateriaService;
 import org.springframework.http.HttpStatus;
@@ -29,13 +30,13 @@ public class MateriaController {
     }
 
     @PostMapping
-    public ResponseEntity<Materia> cadastrarMateria(@RequestBody final Materia materia) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.materiaService.cadastrar(materia));
+    public ResponseEntity<Materia> cadastrarMateria(@RequestBody final MateriaDto materiaDto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(this.materiaService.cadastrar(materiaDto));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Materia> atualizarMateria(@PathVariable final Long id, @RequestBody final Materia materia) {
-        final Materia materiaAtualizada = this.materiaService.atualizar(id, materia);
+    public ResponseEntity<Materia> atualizarMateria(@PathVariable final Long id, @RequestBody final MateriaDto materiaDto) {
+        final Materia materiaAtualizada = this.materiaService.atualizar(id, materiaDto);
 
         return ResponseEntity.status(HttpStatus.OK).body(materiaAtualizada);
     }

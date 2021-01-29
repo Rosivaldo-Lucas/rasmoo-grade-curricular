@@ -1,9 +1,11 @@
 package com.rasmoo.cliente.escola.gradecurricular.services.impl;
 
+import com.rasmoo.cliente.escola.gradecurricular.dto.MateriaDto;
 import com.rasmoo.cliente.escola.gradecurricular.entities.Materia;
 import com.rasmoo.cliente.escola.gradecurricular.exceptions.MateriaException;
 import com.rasmoo.cliente.escola.gradecurricular.repositories.MateriaRepository;
 import com.rasmoo.cliente.escola.gradecurricular.services.IMateriaService;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -42,21 +44,29 @@ public class MateriaServiceImpl implements IMateriaService {
     }
 
     @Override
-    public Materia cadastrar(final Materia materia) {
+    public Materia cadastrar(final MateriaDto materiaDto) {
+        final ModelMapper modelMapper = new ModelMapper();
+
+        final Materia materia = modelMapper.map(materiaDto, Materia.class);
+
         return this.materiaRepository.save(materia);
     }
 
     @Override
-    public Materia atualizar(final Long id, final Materia materia) {
+    public Materia atualizar(final Long id, final MateriaDto materiaDto) {
         try {
-            final Materia materiaSalva = this.buscar(id);
+            final ModelMapper modelMapper = new ModelMapper();
 
-            materiaSalva.setNome(materia.getNome());
-            materiaSalva.setCodigo(materia.getCodigo());
-            materiaSalva.setFrequencia(materia.getFrequencia());
-            materiaSalva.setHoras(materia.getHoras());
+            final Optional<Materia> materiaOptional = this.materiaRepository.findById(id);
 
-            return this.materiaRepository.save(materiaSalva);
+            if (materiaOptional.isEmpty()) {
+                throw new MateriaException("Materia não encontrada", HttpStatus.NOT_FOUND);
+            }
+
+            materiaDto.setId(id);
+            final Materia materiaAtualizada = modelMapper.map(materiaDto, Materia.class);
+
+            return this.materiaRepository.save(materiaAtualizada);
         } catch (MateriaException materiaException) {
             throw materiaException;
         } catch (Exception exception) {
