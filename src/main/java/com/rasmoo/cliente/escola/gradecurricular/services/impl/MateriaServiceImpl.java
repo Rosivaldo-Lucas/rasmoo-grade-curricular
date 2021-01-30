@@ -6,6 +6,7 @@ import com.rasmoo.cliente.escola.gradecurricular.exceptions.MateriaException;
 import com.rasmoo.cliente.escola.gradecurricular.repositories.MateriaRepository;
 import com.rasmoo.cliente.escola.gradecurricular.services.IMateriaService;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -17,8 +18,12 @@ public class MateriaServiceImpl implements IMateriaService {
 
     private final MateriaRepository materiaRepository;
 
+    private final ModelMapper modelMapper;
+
+    @Autowired
     public MateriaServiceImpl(final MateriaRepository materiaRepository) {
         this.materiaRepository = materiaRepository;
+        this.modelMapper = new ModelMapper();
     }
 
     @Override
@@ -45,9 +50,7 @@ public class MateriaServiceImpl implements IMateriaService {
 
     @Override
     public Materia cadastrar(final MateriaDto materiaDto) {
-        final ModelMapper modelMapper = new ModelMapper();
-
-        final Materia materia = modelMapper.map(materiaDto, Materia.class);
+        final Materia materia = this.modelMapper.map(materiaDto, Materia.class);
 
         return this.materiaRepository.save(materia);
     }
@@ -55,8 +58,6 @@ public class MateriaServiceImpl implements IMateriaService {
     @Override
     public Materia atualizar(final Long id, final MateriaDto materiaDto) {
         try {
-            final ModelMapper modelMapper = new ModelMapper();
-
             final Optional<Materia> materiaOptional = this.materiaRepository.findById(id);
 
             if (materiaOptional.isEmpty()) {
@@ -64,7 +65,7 @@ public class MateriaServiceImpl implements IMateriaService {
             }
 
             materiaDto.setId(id);
-            final Materia materiaAtualizada = modelMapper.map(materiaDto, Materia.class);
+            final Materia materiaAtualizada = this.modelMapper.map(materiaDto, Materia.class);
 
             return this.materiaRepository.save(materiaAtualizada);
         } catch (MateriaException materiaException) {
