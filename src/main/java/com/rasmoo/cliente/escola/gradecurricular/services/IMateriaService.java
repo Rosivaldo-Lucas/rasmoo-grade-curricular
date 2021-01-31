@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface IMateriaService {
 
-    public List<Materia> listar();
+    public List<MateriaDto> listar();
 
-    public Materia buscar(final Long id);
+    public MateriaDto buscar(final Long id);
 
-    public Materia cadastrar(final MateriaDto materiaDto);
+    public MateriaDto cadastrar(final MateriaDto materiaDto);
 
-    public Materia atualizar(final Long id, final MateriaDto materiaDto);
+    public MateriaDto atualizar(final Long id, final MateriaDto materiaDto);
 
     public void deletar(final Long id);
 
