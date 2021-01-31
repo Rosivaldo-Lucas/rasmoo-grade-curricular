@@ -1,8 +1,7 @@
 package com.rasmoo.cliente.escola.gradecurricular.hadlers;
 
 import com.rasmoo.cliente.escola.gradecurricular.exceptions.MateriaException;
-import com.rasmoo.cliente.escola.gradecurricular.model.ErrorMapResponse;
-import com.rasmoo.cliente.escola.gradecurricular.model.ErrorResponse;
+import com.rasmoo.cliente.escola.gradecurricular.model.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -17,8 +16,10 @@ import java.util.Map;
 public class ResourceHandler {
 
     @ExceptionHandler({ MethodArgumentNotValidException.class })
-    public ResponseEntity<ErrorMapResponse> handlerMethodArgumentNotValidException(final MethodArgumentNotValidException methodArgumentNotValidException) {
+    public ResponseEntity<Response<Map<String, String>>> handlerMethodArgumentNotValidException(final MethodArgumentNotValidException methodArgumentNotValidException) {
         final Map<String, String> erros = new HashMap<>();
+
+        final Response<Map<String, String>> response = new Response<>();
 
         methodArgumentNotValidException.getBindingResult().getAllErrors().forEach((error) -> {
             final String campo = ((FieldError)error).getField();
@@ -27,22 +28,20 @@ public class ResourceHandler {
             erros.put(campo, mensagem);
         });
 
-        final ErrorMapResponse errorMapResponse = new ErrorMapResponse();
-        errorMapResponse.setHttpStatus(HttpStatus.BAD_REQUEST.value());
-        errorMapResponse.setErros(erros);
-        errorMapResponse.setTimestamp(System.currentTimeMillis());
+        response.setStatusCode(HttpStatus.BAD_REQUEST.value());
+        response.setData(erros);
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorMapResponse);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler({ MateriaException.class })
-    public ResponseEntity<ErrorResponse> handlerMateriaException(final MateriaException materiaException) {
-        final ErrorResponse error = new ErrorResponse();
-        error.setHttpStatus(materiaException.getHttpStatus().value());
-        error.setMensagem(materiaException.getMessage());
-        error.setTimestamp(System.currentTimeMillis());
+    public ResponseEntity<Response<String>> handlerMateriaException(final MateriaException materiaException) {
+        final Response<String> response = new Response<>();
 
-        return ResponseEntity.status(materiaException.getHttpStatus()).body(error);
+        response.setStatusCode(materiaException.getHttpStatus().value());
+        response.setData(materiaException.getMessage());
+
+        return ResponseEntity.status(materiaException.getHttpStatus()).body(response);
     }
 
 }

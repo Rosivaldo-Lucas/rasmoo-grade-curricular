@@ -12,4 +12,10 @@ public class Response<T> extends RepresentationModel<Response<T>> {
 
     private T data;
 
+    private Long timestamp;
+
+    public Response() {
+        this.timestamp = System.currentTimeMillis();
+    }
+
 }
