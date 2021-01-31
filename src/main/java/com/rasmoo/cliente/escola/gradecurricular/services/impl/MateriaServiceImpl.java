@@ -16,8 +16,10 @@ import java.util.Optional;
 @Service
 public class MateriaServiceImpl implements IMateriaService {
 
-    private final MateriaRepository materiaRepository;
+    private static final String MENSAGEM_ERRO_INTERNO = "Erro interno identificado. Contate o suporte";
+    private static final String MENSAGEM_ERRO_MATERIA_NAO_ENCONTRADA = "Materia não encontrada";
 
+    private final MateriaRepository materiaRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
@@ -37,22 +39,26 @@ public class MateriaServiceImpl implements IMateriaService {
             final Optional<Materia> materia = this.materiaRepository.findById(id);
 
             if (materia.isEmpty()) {
-                throw new MateriaException("Materia não encontrada", HttpStatus.NOT_FOUND);
+                throw new MateriaException(MENSAGEM_ERRO_MATERIA_NAO_ENCONTRADA, HttpStatus.NOT_FOUND);
             }
 
             return materia.get();
         } catch (MateriaException materiaException) {
             throw materiaException;
         } catch (Exception exception) {
-            throw new MateriaException("Erro interno identificado. Contate o suporte", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Override
     public Materia cadastrar(final MateriaDto materiaDto) {
-        final Materia materia = this.modelMapper.map(materiaDto, Materia.class);
+        try {
+            final Materia materia = this.modelMapper.map(materiaDto, Materia.class);
 
-        return this.materiaRepository.save(materia);
+            return this.materiaRepository.save(materia);
+        } catch (Exception exception) {
+            throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
@@ -61,7 +67,7 @@ public class MateriaServiceImpl implements IMateriaService {
             final Optional<Materia> materiaOptional = this.materiaRepository.findById(id);
 
             if (materiaOptional.isEmpty()) {
-                throw new MateriaException("Materia não encontrada", HttpStatus.NOT_FOUND);
+                throw new MateriaException(MENSAGEM_ERRO_MATERIA_NAO_ENCONTRADA, HttpStatus.NOT_FOUND);
             }
 
             materiaDto.setId(id);
@@ -71,7 +77,7 @@ public class MateriaServiceImpl implements IMateriaService {
         } catch (MateriaException materiaException) {
             throw materiaException;
         } catch (Exception exception) {
-            throw new MateriaException("Erro interno identificado. Contate o suporte", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -84,7 +90,7 @@ public class MateriaServiceImpl implements IMateriaService {
         } catch (MateriaException materiaException) {
             throw materiaException;
         } catch (Exception exception) {
-            throw new MateriaException("Erro interno identificado. Contate o suporte", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
