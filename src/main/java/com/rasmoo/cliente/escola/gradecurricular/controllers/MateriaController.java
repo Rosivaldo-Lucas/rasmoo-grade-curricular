@@ -36,6 +36,21 @@ public class MateriaController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/horario-minimo/{horaMinima}")
+    public ResponseEntity<Response<List<MateriaDto>>> listarMateriaPorHoraMinima(@PathVariable final int horaMinima) {
+        final Response<List<MateriaDto>> response = new Response<>();
+
+        final List<MateriaDto> materiasDto = this.materiaService.listarPorHoraMinima(horaMinima);
+
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setData(materiasDto);
+
+        response.add(WebMvcLinkBuilder
+                .linkTo(WebMvcLinkBuilder.methodOn(MateriaController.class).listarMateriaPorHoraMinima(horaMinima)).withSelfRel());
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Response<MateriaDto>> buscarMateria(@PathVariable final Long id) {
         final MateriaDto materiaDto = this.materiaService.buscar(id);

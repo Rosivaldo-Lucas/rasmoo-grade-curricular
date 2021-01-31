@@ -9,6 +9,8 @@ public interface IMateriaService {
 
     public List<MateriaDto> listar();
 
+    public List<MateriaDto> listarPorHoraMinima(final int horaMinima);
+
     public MateriaDto buscar(final Long id);
 
     public MateriaDto cadastrar(final MateriaDto materiaDto);
@@ -16,5 +18,4 @@ public interface IMateriaService {
     public MateriaDto atualizar(final Long id, final MateriaDto materiaDto);
 
     public void deletar(final Long id);
-
 }
