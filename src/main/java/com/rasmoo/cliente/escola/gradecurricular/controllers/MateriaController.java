@@ -51,6 +51,18 @@ public class MateriaController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/frequencia/{frequencia}")
+    public ResponseEntity<Response<List<MateriaDto>>> listarMateriasPorFrequencia(@PathVariable final int frequencia) {
+        final Response<List<MateriaDto>> response = new Response<>();
+
+        final List<MateriaDto> materiasDto = this.materiaService.listarPorFrequencia(frequencia);
+
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setData(materiasDto);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<Response<MateriaDto>> buscarMateria(@PathVariable final Long id) {
         final MateriaDto materiaDto = this.materiaService.buscar(id);

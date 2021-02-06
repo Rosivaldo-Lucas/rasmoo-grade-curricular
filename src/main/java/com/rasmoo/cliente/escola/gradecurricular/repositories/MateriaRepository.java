@@ -14,4 +14,6 @@ public interface MateriaRepository extends JpaRepository<Materia, Long> {
     @Query("SELECT m FROM Materia as m WHERE m.horas >= :horaMinima")
     public List<Materia> findByHoraMinima(@Param(value = "horaMinima") final int horaMinima);
 
+    public List<Materia> findByFrequencia(final int frequencia);
+
 }

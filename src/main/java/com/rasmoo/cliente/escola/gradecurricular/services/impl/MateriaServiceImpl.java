@@ -38,12 +38,9 @@ public class MateriaServiceImpl implements IMateriaService {
     @Override
     public List<MateriaDto> listar() {
         try {
-            final List<MateriaDto> materiasDto = this.modelMapper.map(this.materiaRepository.findAll(), new TypeToken<List<MateriaDto>>() {}.getType());
+            final List<Materia> materias = this.materiaRepository.findAll();
 
-            materiasDto.forEach((materia) -> materia.add(WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(MateriaController.class).buscarMateria(materia.getId())).withSelfRel()));
-
-            return materiasDto;
+            return this.adicionarLinks(materias);
         } catch (Exception exception) {
             throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -54,12 +51,18 @@ public class MateriaServiceImpl implements IMateriaService {
         try {
             final List<Materia> materias = this.materiaRepository.findByHoraMinima(horaMinima);
 
-            final List<MateriaDto> materiasDto = this.modelMapper.map(materias, new TypeToken<List<MateriaDto>>() {}.getType());
+            return this.adicionarLinks(materias);
+        } catch (Exception exception) {
+            throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-            materiasDto.forEach((materia) -> materia.add(WebMvcLinkBuilder
-                    .linkTo(WebMvcLinkBuilder.methodOn(MateriaController.class).buscarMateria(materia.getId())).withSelfRel()));
+    @Override
+    public List<MateriaDto> listarPorFrequencia(final int frequencia) {
+        try {
+            final List<Materia> materias = this.materiaRepository.findByFrequencia(frequencia);
 
-            return materiasDto;
+            return this.adicionarLinks(materias);
         } catch (Exception exception) {
             throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -131,6 +134,19 @@ public class MateriaServiceImpl implements IMateriaService {
         } catch (Exception exception) {
             throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+    private List<MateriaDto> adicionarLinks(final List<Materia> materias) {
+        final List<MateriaDto> materiasDto = toMateriasDto(materias);
+
+        materiasDto.forEach((materia) -> materia.add(
+                WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(MateriaController.class).buscarMateria(materia.getId())).withSelfRel()));
+
+        return materiasDto;
+    }
+
+    private List<MateriaDto> toMateriasDto(final List<Materia> materias) {
+        return this.modelMapper.map(materias, new TypeToken<List<MateriaDto>>() {}.getType());
     }
 
 }
