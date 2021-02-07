@@ -18,12 +18,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.rasmoo.cliente.escola.gradecurricular.constants.MensagensError.*;
+
 @CacheConfig(cacheNames = { "materia" })
 @Service
 public class MateriaServiceImpl implements IMateriaService {
-
-    private static final String MENSAGEM_ERRO_INTERNO = "Erro interno identificado. Contate o suporte";
-    private static final String MENSAGEM_ERRO_MATERIA_NAO_ENCONTRADA = "Materia não encontrada";
 
     private final MateriaRepository materiaRepository;
     private final ModelMapper modelMapper;

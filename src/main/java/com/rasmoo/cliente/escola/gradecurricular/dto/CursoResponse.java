@@ -1,5 +1,7 @@
 package com.rasmoo.cliente.escola.gradecurricular.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import java.util.List;
 
 public class CursoResponse {
@@ -10,6 +12,7 @@ public class CursoResponse {
 
     private String codigo;
 
+    @JsonInclude(JsonInclude.Include.NON_EMPTY)
     private List<MateriaDto> materias;
 
     public Long getId() {

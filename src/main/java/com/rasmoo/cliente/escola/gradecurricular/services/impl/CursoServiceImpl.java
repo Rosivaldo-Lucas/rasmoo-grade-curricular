@@ -5,16 +5,20 @@ import com.rasmoo.cliente.escola.gradecurricular.dto.CursoResponse;
 import com.rasmoo.cliente.escola.gradecurricular.dto.MateriaDto;
 import com.rasmoo.cliente.escola.gradecurricular.entities.Curso;
 import com.rasmoo.cliente.escola.gradecurricular.entities.Materia;
+import com.rasmoo.cliente.escola.gradecurricular.exceptions.MateriaException;
 import com.rasmoo.cliente.escola.gradecurricular.repositories.CursoRepository;
 import com.rasmoo.cliente.escola.gradecurricular.services.ICursoService;
 import com.rasmoo.cliente.escola.gradecurricular.services.IMateriaService;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.rasmoo.cliente.escola.gradecurricular.constants.MensagensError.MENSAGEM_ERRO_INTERNO;
 
 @Service
 public class CursoServiceImpl implements ICursoService {
@@ -31,6 +35,17 @@ public class CursoServiceImpl implements ICursoService {
         this.materiaService = materiaService;
 
         this.modelMapper = new ModelMapper();
+    }
+
+    @Override
+    public List<CursoResponse> listar() {
+        try {
+            final List<Curso> cursos = this.cursoRepository.findAll();
+
+            return this.modelMapper.map(cursos, new TypeToken<List<CursoResponse>>() {}.getType());
+        } catch (Exception exception) {
+            throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Override
