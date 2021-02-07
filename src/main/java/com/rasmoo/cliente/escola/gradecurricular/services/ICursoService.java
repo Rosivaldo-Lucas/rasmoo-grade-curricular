@@ -9,6 +9,8 @@ public interface ICursoService {
 
     public List<CursoResponse> listar();
 
+    public CursoResponse buscar(final Long idCurso);
+
     public CursoResponse cadastrar(final CursoRequest cursoRequest);
 
 }

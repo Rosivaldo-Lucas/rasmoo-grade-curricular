@@ -46,6 +46,17 @@ public class CursoController {
         return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
+    @GetMapping("/{idCurso}")
+    public ResponseEntity<Response<CursoResponse>> buscarCurso(@PathVariable final Long idCurso) {
+        final CursoResponse cursoResponse = this.cursoService.buscar(idCurso);
+
+        final Response<CursoResponse> response = new Response<>();
+        response.setStatusCode(HttpStatus.OK.value());
+        response.setData(cursoResponse);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
     @PostMapping
     public ResponseEntity<Response<CursoResponse>> cadastrarCurso(@RequestBody @Valid final CursoRequest cursoRequest) {
         final CursoResponse cursoResponse = this.cursoService.cadastrar(cursoRequest);

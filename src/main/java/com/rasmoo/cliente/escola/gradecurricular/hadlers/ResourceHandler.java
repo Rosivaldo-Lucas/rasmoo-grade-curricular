@@ -1,5 +1,7 @@
 package com.rasmoo.cliente.escola.gradecurricular.hadlers;
 
+import com.rasmoo.cliente.escola.gradecurricular.exceptions.CursoException;
+import com.rasmoo.cliente.escola.gradecurricular.exceptions.EntityException;
 import com.rasmoo.cliente.escola.gradecurricular.exceptions.MateriaException;
 import com.rasmoo.cliente.escola.gradecurricular.model.Response;
 import org.springframework.http.HttpStatus;
@@ -34,14 +36,14 @@ public class ResourceHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
-    @ExceptionHandler({ MateriaException.class })
-    public ResponseEntity<Response<String>> handlerMateriaException(final MateriaException materiaException) {
+    @ExceptionHandler({ MateriaException.class, CursoException.class })
+    public ResponseEntity<Response<String>> handlerEntityException(final EntityException entityException) {
         final Response<String> response = new Response<>();
 
-        response.setStatusCode(materiaException.getHttpStatus().value());
-        response.setData(materiaException.getMessage());
+        response.setStatusCode(entityException.getHttpStatus().value());
+        response.setData(entityException.getMessage());
 
-        return ResponseEntity.status(materiaException.getHttpStatus()).body(response);
+        return ResponseEntity.status(entityException.getHttpStatus()).body(response);
     }
 
 }

@@ -5,6 +5,7 @@ import com.rasmoo.cliente.escola.gradecurricular.dto.CursoResponse;
 import com.rasmoo.cliente.escola.gradecurricular.dto.MateriaDto;
 import com.rasmoo.cliente.escola.gradecurricular.entities.Curso;
 import com.rasmoo.cliente.escola.gradecurricular.entities.Materia;
+import com.rasmoo.cliente.escola.gradecurricular.exceptions.CursoException;
 import com.rasmoo.cliente.escola.gradecurricular.exceptions.MateriaException;
 import com.rasmoo.cliente.escola.gradecurricular.repositories.CursoRepository;
 import com.rasmoo.cliente.escola.gradecurricular.services.ICursoService;
@@ -17,8 +18,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static com.rasmoo.cliente.escola.gradecurricular.constants.MensagensError.MENSAGEM_ERRO_INTERNO;
+import static com.rasmoo.cliente.escola.gradecurricular.constants.MensagensError.*;
 
 @Service
 public class CursoServiceImpl implements ICursoService {
@@ -43,6 +45,23 @@ public class CursoServiceImpl implements ICursoService {
             final List<Curso> cursos = this.cursoRepository.findAll();
 
             return this.modelMapper.map(cursos, new TypeToken<List<CursoResponse>>() {}.getType());
+        } catch (Exception exception) {
+            throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Override
+    public CursoResponse buscar(final Long idCurso) {
+        try {
+            final Optional<Curso> cursoOptional = this.cursoRepository.findById(idCurso);
+
+            if (cursoOptional.isEmpty()) {
+                throw new CursoException(MENSAGEM_ERRO_CURSO_NAO_ENCONTRADO, HttpStatus.NOT_FOUND);
+            }
+
+            return this.modelMapper.map(cursoOptional.get(), CursoResponse.class);
+        } catch (CursoException cursoException) {
+            throw cursoException;
         } catch (Exception exception) {
             throw new MateriaException(MENSAGEM_ERRO_INTERNO, HttpStatus.INTERNAL_SERVER_ERROR);
         }

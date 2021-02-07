@@ -1,10 +1,11 @@
 package com.rasmoo.cliente.escola.gradecurricular.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.springframework.hateoas.RepresentationModel;
 
 import java.util.List;
 
-public class CursoResponse {
+public class CursoResponse extends RepresentationModel<CursoResponse> {
 
     private Long id;
 
