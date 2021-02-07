@@ -3,6 +3,7 @@ package com.rasmoo.cliente.escola.gradecurricular.entities;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
 
 @Entity
@@ -27,6 +28,10 @@ public class Materia {
 
     @Column(name = "FREQUENCIA")
     private Integer frequencia;
+
+    @ManyToOne
+    @JoinColumn(name = "ID_MATERIA")
+    private Curso curso;
 
     public Long getId() {
         return id;
@@ -66,6 +71,14 @@ public class Materia {
 
     public void setFrequencia(Integer frequencia) {
         this.frequencia = frequencia;
+    }
+
+    public Curso getCurso() {
+        return curso;
+    }
+
+    public void setCurso(Curso curso) {
+        this.curso = curso;
     }
 
     @Override
